@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDown, ArrowUpRight, BookOpen, ChevronRight, CircleHelp, Cog,
   ExternalLink, Fingerprint, Gauge, Gem, Menu, Plus, RotateCcw,
@@ -43,6 +43,10 @@ function App() {
   const [digits, setDigits] = useState([2, 0, 0]);
   const [turns, setTurns] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  useEffect(() => {
+    fetch("/pasted_content.txt").then((response) => response.text()).then(setPastedText);
+  }, []);
   const number = digits[0] * 100 + digits[1] * 10 + digits[2];
   const result = number * turns;
   const filteredChapters = useMemo(() => activePart === "all" ? chapters : chapters.filter((chapter) => chapter.part === activePart), [activePart]);
@@ -78,6 +82,7 @@ function App() {
       <section className="reveal-section"><div className="reveal__seal"><span>РВ</span><div className="seal-orbit" /></div><div className="reveal__copy"><SectionLabel>Ключ найден</SectionLabel><h2>Секрет не в ответе.<br /><em>Секрет — в сборке.</em></h2><p>Curta не хранит заранее написанное число — она вычисляет его из положения деталей и повторения операции. «Русская вещь» работает похоже: одна и та же оппозиция возвращается в истории, культуре, душе и мифе, пока не начинает звучать как целое.</p><div className="reveal__equation"><span>ИСТОРИЯ</span><Plus size={14} /><span>КУЛЬТУРА</span><Plus size={14} /><span>ДУША</span><ArrowUpRight size={18} /><strong>ВЕЩЬ</strong></div></div></section>
 
       <section className="sources-section"><div><SectionLabel>Для дальнейшего чтения</SectionLabel><h2>Следы,<br /><em>которые остались</em></h2></div><div className="source-list">{sources.map((source, index) => <a className="source-row" href={source.href} target="_blank" rel="noreferrer" key={source.label}><span className="source-row__index">0{index + 1}</span><span><strong>{source.label}</strong><small>{source.meta}</small></span><ExternalLink size={16} /></a>)}</div></section>
+      <section className="verbatim-section" id="verbatim"><div className="verbatim__heading"><SectionLabel>Отдельное приложение</SectionLabel><h2>Текст<br /><em>дословно</em></h2><p>Ниже размещён приложенный материал без редактирования. Сохранены его формулировки, порядок строк и исходные опечатки.</p></div><pre className="verbatim__content">{pastedText || "Загрузка приложенного текста…"}</pre></section>
       <footer className="site-footer"><div className="footer-mark"><span className="wordmark__mark"><span>Р</span><span>В</span></span><span>РУССКАЯ ВЕЩЬ<br /><i>× CURTA</i></span></div><p>Интерпретационный сайт о книге Александра Дугина<br />и механике чтения, собранной вокруг Curta.</p><a href="#top">Наверх <ArrowUpRight size={15} /></a></footer>
       <div className="disclaimer"><CircleHelp size={15} /><span>Связь книги с Curta — авторская метафора этого сайта, а не установленное автором сопоставление.</span></div>
     </main>
